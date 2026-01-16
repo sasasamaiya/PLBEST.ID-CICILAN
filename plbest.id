@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Sistem Informasi Manajemen Cicilan UMKM</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+body{
+  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+  min-height:100vh;
+  font-family:'Segoe UI',sans-serif;
+}
+.container{
+  background:rgba(255,255,255,.97);
+  border-radius:25px;
+  padding:30px;
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
+}
+.card{
+  border:none;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.12);
+  transition:.3s;
+  cursor:pointer;
+}
+.card:hover{transform:translateY(-5px);}
+.dashboard-card{
+  background:linear-gradient(135deg,#ff5f9e,#ff8fb1);
+  color:white;
+}
+.dashboard-card b{font-size:26px;}
+.nav-pills .nav-link{
+  border-radius:30px;
+  padding:10px 22px;
+  margin:0 4px;
+}
+.nav-pills .nav-link.active{
+  background:linear-gradient(135deg,#ff5f9e,#ff8fb1);
+}
+.btn-primary{
+  background:linear-gradient(135deg,#ff5f9e,#ff8fb1);
+  border:none;
+}
+.btn-success{
+  background:linear-gradient(135deg,#ff7eb3,#ff65a3);
+  border:none;
+}
+.badge-lunas{background:#ff5f9e;padding:6px 12px;border-radius:20px;}
+.badge-belum{background:#d63384;padding:6px 12px;border-radius:20px;}
+ul li{
+  background:#f8f9fa;
+  padding:10px 15px;
+  border-radius:12px;
+  margin-bottom:6px;
+  list-style:none;
+}
+table{border-radius:15px;overflow:hidden;}
+table th,td{text-align:center;vertical-align:middle;}
+</style>
+</head>
+
+<body class="container mt-4">
+
+<h3 class="text-center fw-bold mb-4">
+<i class="bi bi-cash-coin"></i><br>
+Sistem Informasi Manajemen Cicilan<br>
+<small class="text-muted">UMKM PLBEST.ID</small>
+</h3>
+
+<ul class="nav nav-pills justify-content-center mb-4">
+<li class="nav-item"><a class="nav-link active" data-bs-toggle="pill" href="#dash">Dashboard</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#pel">Pelanggan</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#bar">Barang</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#cic">Cicilan</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="pill" href="#lap">Laporan</a></li>
+</ul>
+
+<div class="tab-content">
+
+<!-- DASHBOARD -->
+<div class="tab-pane fade show active" id="dash">
+<div class="row g-4 text-center">
+
+  <div class="col-md-3">
+    <div class="card p-4 dashboard-card" onclick="openTab('pel')">
+      <i class="bi bi-people fs-3"></i><br>
+      Pelanggan<br><b id="dp">0</b>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card p-4 dashboard-card" onclick="openTab('bar')">
+      <i class="bi bi-box-seam fs-3"></i><br>
+      Barang<br><b id="db">0</b>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card p-4 dashboard-card" onclick="openTab('cic')">
+      <i class="bi bi-cash-stack fs-3"></i><br>
+      Cicilan<br><b id="dc">0</b>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card p-4 dashboard-card" onclick="openTab('lap')">
+      <i class="bi bi-file-earmark-text fs-3"></i><br>
+      Total Piutang<br>
+      Rp <b id="dt">0</b>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- PELANGGAN -->
+<div class="tab-pane fade" id="pel">
+<div class="card p-4">
+<h4>Data Pelanggan</h4>
+<input id="pelNama" class="form-control mb-2" placeholder="Nama Pelanggan">
+<button class="btn btn-primary" onclick="addPelanggan()">Simpan</button>
+<ul id="listPel" class="mt-3"></ul>
+</div>
+</div>
+
+<!-- BARANG -->
+<div class="tab-pane fade" id="bar">
+<div class="card p-4">
+<h4>Data Barang</h4>
+<input id="barNama" class="form-control mb-2" placeholder="Nama Barang">
+<input id="barHarga" class="form-control mb-2" placeholder="Harga">
+<button class="btn btn-primary" onclick="addBarang()">Simpan</button>
+<ul id="listBar" class="mt-3"></ul>
+</div>
+</div>
+
+<!-- CICILAN -->
+<div class="tab-pane fade" id="cic">
+<div class="card p-4">
+<h4>Input Cicilan</h4>
+<select id="cPel" class="form-control mb-2">
+<option value="">-- Pilih Pelanggan --</option>
+</select>
+<select id="cBar" class="form-control mb-2" onchange="isiHarga()">
+<option value="">-- Pilih Barang --</option>
+</select>
+<input id="cTotal" class="form-control mb-2" placeholder="Total Harga" readonly>
+<input id="cBayar" class="form-control mb-2" placeholder="Bayar Cicilan">
+<button class="btn btn-success w-100" onclick="bayarCicilan()">
+<i class="bi bi-cash"></i> Bayar Cicilan
+</button>
+</div>
+</div>
+
+<!-- LAPORAN -->
+<div class="tab-pane fade" id="lap">
+<div class="card p-4">
+<h4>Laporan Cicilan</h4>
+<table class="table table-bordered table-hover">
+<thead class="table-light">
+<tr>
+<th>Pelanggan</th>
+<th>Barang</th>
+<th>Total</th>
+<th>Sisa</th>
+<th>Status</th>
+<th>Riwayat</th>
+</tr>
+</thead>
+<tbody id="lapBody"></tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+let pelanggan = JSON.parse(localStorage.getItem('pelanggan')) || [];
+let barang = JSON.parse(localStorage.getItem('barang')) || [];
+let cicilan = JSON.parse(localStorage.getItem('cicilan')) || [];
+
+function rupiah(x){return x.toLocaleString('id-ID');}
+function save(){
+localStorage.setItem('pelanggan',JSON.stringify(pelanggan));
+localStorage.setItem('barang',JSON.stringify(barang));
+localStorage.setItem('cicilan',JSON.stringify(cicilan));
+}
+
+function openTab(id){
+document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('show','active'));
+document.querySelector(`a[href="#${id}"]`).classList.add('active');
+document.getElementById(id).classList.add('show','active');
+}
+
+function addPelanggan(){
+if(!pelNama.value)return;
+pelanggan.push(pelNama.value);
+listPel.innerHTML+=`<li>${pelNama.value}</li>`;
+cPel.innerHTML+=`<option>${pelNama.value}</option>`;
+dp.innerText=pelanggan.length;
+pelNama.value='';
+save();
+}
+
+function addBarang(){
+if(!barNama.value||!barHarga.value)return;
+barang.push({n:barNama.value,h:+barHarga.value});
+listBar.innerHTML+=`<li>${barNama.value} - Rp ${rupiah(+barHarga.value)}</li>`;
+cBar.innerHTML+=`<option value="${barang.length-1}">${barNama.value}</option>`;
+db.innerText=barang.length;
+barNama.value=''; barHarga.value='';
+save();
+}
+
+function isiHarga(){
+if(cBar.value==='')return;
+cTotal.value=barang[cBar.value].h;
+}
+
+function bayarCicilan(){
+let nama=cPel.value;
+let bayar=+cBayar.value;
+if(!nama||!bayar)return alert("Lengkapi data");
+
+let data=cicilan.find(x=>x.nama===nama);
+if(!data){
+data={
+nama:nama,
+barang:barang[cBar.value].n,
+total:+cTotal.value,
+sisa:+cTotal.value,
+riwayat:[]
+};
+cicilan.push(data);
+}
+data.sisa=Math.max(0,data.sisa-bayar);
+data.riwayat.push(`Rp ${rupiah(bayar)}`);
+save();
+tampil();
+cBayar.value='';
+}
+
+function tampil(){
+lapBody.innerHTML='';
+let totalPiutang=0;
+cicilan.forEach(x=>{
+totalPiutang+=x.sisa;
+lapBody.innerHTML+=`
+<tr>
+<td>${x.nama}</td>
+<td>${x.barang}</td>
+<td>Rp ${rupiah(x.total)}</td>
+<td>Rp ${rupiah(x.sisa)}</td>
+<td>${x.sisa==0?
+'<span class="badge-lunas">Lunas</span>':
+'<span class="badge-belum">Belum</span>'}</td>
+<td>${x.riwayat.join('<br>')}</td>
+</tr>`;
+});
+dc.innerText=cicilan.length;
+dt.innerText=rupiah(totalPiutang);
+}
+
+window.onload=()=>{
+pelanggan.forEach(p=>{
+listPel.innerHTML+=`<li>${p}</li>`;
+cPel.innerHTML+=`<option>${p}</option>`;
+});
+barang.forEach((b,i)=>{
+listBar.innerHTML+=`<li>${b.n} - Rp ${rupiah(b.h)}</li>`;
+cBar.innerHTML+=`<option value="${i}">${b.n}</option>`;
+});
+dp.innerText=pelanggan.length;
+db.innerText=barang.length;
+tampil();
+};
+</script>
+
+</body>
+</html>
